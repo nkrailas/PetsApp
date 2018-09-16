@@ -58,8 +58,12 @@ public class CatalogActivity extends AppCompatActivity {
         // and pass context or current activity.
         mDbHelper = new PetDbHelper(this);
 
-        displayDatabaseInfo();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
     }
 
     /**
