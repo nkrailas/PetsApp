@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.Selection;
 import android.util.Log;
 
 import java.net.URI;
@@ -110,6 +111,24 @@ public class PetProvider extends ContentProvider {
 
     private Uri insertPet(Uri uri, ContentValues values) {
 
+        // Check that the name is not null
+        String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Pet requires a name");
+        }
+        // Check that the gender is valid
+        Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+        if (gender == null || !PetEntry.isValidGender(gender)) {
+            throw new IllegalArgumentException("Pet requires valid gender");
+        }
+        // If weight provided, check that it is >= 0.
+        Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (weight != null && weight < 0) {
+            throw new IllegalArgumentException("Pet requires valid weight");
+        }
+
+        // No need to check breed, any value is valid (including null).
+
         // Get writable database.
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -131,8 +150,66 @@ public class PetProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            case PET_ID:
+                // For the PET_ID code, extract out the ID from the URI to know which row to update.
+                // Selection will be "_id=?" and selection arguments will be String array with ID.
+                selection = PetEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
     }
+    // Update pets in database with given content values. Apply changed to rows specified in selection
+    // and selection arguments (which could be 0 or 1 or more pets). Return number of rows that were
+    // successfully updated.
+
+    private int updatePet(Uri uri, ContentValues values, String selection, String[]
+            selectionArgs) {
+
+        // If the PetEntry.COLUMN_PET_NAME key is present, check that the name value is not null.
+        if (values.containsKey(PetEntry.COLUMN_PET_NAME)) {
+            String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+
+        // If the PetEntry.COLUMN_PET_GENDER key is present, check that the gender value is valid.
+        if (values.containsKey(PetEntry.COLUMN_PET_GENDER)) {
+            Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if (gender == null || PetEntry.isValidGender(gender)) {
+                throw new IllegalArgumentException("Pet requires valid gender");
+            }
+        }
+
+        // If the PetEntry.COLUMN_PET_WEIGHT key is present, check that the weight value is valid.
+        if (values.containsKey(PetEntry.COLUMN_PET_WEIGHT)) {
+            Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            // Check that the weight is >= 0.
+            if (weight != null && weight > 0) {
+                throw new IllegalArgumentException("Pet requires valid weight");
+            }
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+        // If there are no values to update, then don't try to update the database.
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Otherwise, get writable database to update the data.
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        // Returns the number of database rows affected by the update statement.
+        return database.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+    }
+
 
     // Delete the data at the given selection and selection arguments.
 
