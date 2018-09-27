@@ -95,18 +95,21 @@ public class EditorActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         mCurrentPetUri = intent.getData();
 
-        // Set title of EditorActivity to present situation.
-        // If this is a new pet, uri is null so change app bar to say "Add a Pet."
+        // If the intent does NOT contain a pet content URI, then we know that we are creating a new pet.
         if (mCurrentPetUri == null) {
+            // This is a new pet, so change the app bar to say "Add a Pet."
             setTitle(getString(R.string.editor_activity_title_new_pet));
-            // If this is an existing pet, we have uri of pet so change app bar to say "Edit Pet."
+
+            // Invalidate the options menu, so the "Delete" menu option can be hidden.
+            invalidateOptionsMenu();
         } else {
+            // Otherwise, this is an existing pet, so change app bar to say "Edit Pet."
             setTitle(getString(R.string.editor_activity_title_edit_pet));
 
-            // Initialize loader to read the pet data from database and display current values in editor.
+            // Initialize a loader to read the pet data from database and display current values
+            // in editor.
             getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
         }
-
 
         // Find all relevant views that we will need to read user input from.
         mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
@@ -233,6 +236,20 @@ public class EditorActivity extends AppCompatActivity implements
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    // This method is called after invalidateOptionsMenu(), so that the menu can be updated so that
+    // the menu can be updated (some menu items can be hidden or made visible.)
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (mCurrentPetUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
         return true;
     }
 
@@ -377,7 +394,7 @@ public class EditorActivity extends AppCompatActivity implements
      * Show a dialog that warns the user there are unsaved changes that will be lost if they
      * continue leaving the editor.
      *
-     * @param discardButtonClickListener is the click listenere for what to do when the
+     * @param discardButtonClickListener is the click listener for what to do when the
      *                                   user confirms they want to discard their changes.
      */
 
@@ -401,5 +418,58 @@ public class EditorActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
+                deletePet();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    /**
+     * Perform the deletion of the pet in the database.
+     */
+    private void deletePet() {
+        // Only perform the delete if this is an existing pet.
+        if (mCurrentPetUri != null) {
+            // Call the ContentResolver to delete the pet at the given content URI. Pass in null
+            // for the selection and selection args because the mCurrentPetUri content URI already
+            // identifies the pet that we want.
+            int rowsDeleted = getContentResolver().delete(mCurrentPetUri, null, null);
+
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.editor_delete_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_delete_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Close the activity.
+        finish();
     }
 }
