@@ -16,7 +16,6 @@
 package com.example.android.pets;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -112,10 +111,10 @@ public class EditorActivity extends AppCompatActivity implements
         }
 
         // Find all relevant views that we will need to read user input from.
-        mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
-        mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
-        mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
-        mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
+        mNameEditText = findViewById(R.id.edit_pet_name);
+        mBreedEditText = findViewById(R.id.edit_pet_breed);
+        mWeightEditText = findViewById(R.id.edit_pet_weight);
+        mGenderSpinner = findViewById(R.id.spinner_gender);
 
         // Set up OnTouchListeners on all the input fields so we can determine if the user has
         // touched or modified them. This will let us know if there are unsaved changes or not,
@@ -220,7 +219,7 @@ public class EditorActivity extends AppCompatActivity implements
 
             // Show a toast message depending on whether or not the update was successful.
             if (rowsAffected == 0) {
-                // If no rows affeceted, then there was an error with the update.
+                // If no rows affected, then there was an error with the update.
                 Toast.makeText(this, getString(R.string.editor_update_pet_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -340,7 +339,7 @@ public class EditorActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        // Bail earlyl if the cursor is null or there is less than 1 row in the cursor.
+        // Bail early if the cursor is null or there is less than 1 row in the cursor.
         if (cursor == null || cursor.getCount() < 1) {
             return;
         }
