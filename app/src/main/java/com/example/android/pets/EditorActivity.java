@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -85,6 +86,7 @@ public class EditorActivity extends AppCompatActivity implements
         }
     };
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -238,8 +240,8 @@ public class EditorActivity extends AppCompatActivity implements
         return true;
     }
 
-    // This method is called after invalidateOptionsMenu(), so that the menu can be updated so that
-    // the menu can be updated (some menu items can be hidden or made visible.)
+    // This method is called after invalidateOptionsMenu(), so that the menu can be updated (some
+    // menu items can be hidden or made visible.)
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -263,7 +265,8 @@ public class EditorActivity extends AppCompatActivity implements
                 return true;
             // Respond to a click on the "Delete" menu option.
             case R.id.action_delete:
-                // Do nothing for now.
+                // Pop up confirmation dialog for deletion.
+                showDeleteConfirmationDialog();
                 return true;
             // Respond to a click on the "Up" button in the app bar.
             case android.R.id.home:
@@ -319,7 +322,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         // Define a projection that specifies the columns from the table we care about.
         String[] projection = {
                 PetEntry._ID,

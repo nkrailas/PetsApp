@@ -96,8 +96,6 @@ public class CatalogActivity extends AppCompatActivity implements
         // Kick off the loader.
         getLoaderManager().initLoader(PET_LOADER, null, this);
 
-        // Kick off the loader
-        getLoaderManager().initLoader(PET_LOADER, null, this);
     }
 
     // Helper method to insert hardcoded pet data into database. For debugging purposes only.
@@ -152,7 +150,7 @@ public class CatalogActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         // Define a projection that specifies the columns from the table we care about.
         String[] projection = {
                 PetEntry._ID,
@@ -161,11 +159,11 @@ public class CatalogActivity extends AppCompatActivity implements
 
         // Loader will execute the ContentProvider's query method on a background thread.
         return new CursorLoader(this,       // Parent activity context
-                PetEntry.CONTENT_URI,       // Provider content URI to query
-                projection,                 // Columns to include in the resulting Cursor
-                null,                       // No selection clause
-                null,                       // No selection arguments
-                null);                      // Default sort order
+                PetEntry.CONTENT_URI,               // Provider content URI to query
+                projection,                         // Columns to include in the resulting Cursor
+                null,                      // No selection clause
+                null,                   // No selection arguments
+                null);                     // Default sort order
     }
 
     @Override

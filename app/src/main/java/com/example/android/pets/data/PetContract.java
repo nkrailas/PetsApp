@@ -48,13 +48,11 @@ public final class PetContract {
 
         // Returns whether or not the given gender GENDER_UNKNOWN, GENDER_MALE, GENDER_FEMALE.
         public static boolean isValidGender(int gender) {
-            if (gender == GENDER_UNKNOWN || gender == GENDER_MALE || gender == GENDER_MALE) {
+            if (gender == GENDER_UNKNOWN || gender == GENDER_MALE || gender == GENDER_FEMALE) {
                 return true;
             }
 
             return false;
         }
-
-
     }
 }

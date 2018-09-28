@@ -43,13 +43,13 @@ public class PetProvider extends ContentProvider {
     }
 
     // Database helper object
-    private PetDbHelper dbHelper;
+    private PetDbHelper mDbHelper;
 
     //Initialize the provider and the database helper object.
     @Override
     public boolean onCreate() {
         // Create and initialize a PetDbHelper object to gain access to the pets database.
-        dbHelper = new PetDbHelper(getContext());
+        mDbHelper = new PetDbHelper(getContext());
         return true;
     }
 
@@ -60,7 +60,7 @@ public class PetProvider extends ContentProvider {
                         String sortOrder) {
 
         // Get readable database.
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        SQLiteDatabase database = mDbHelper.getReadableDatabase();
 
         // This cursor will hold the result of the query.
         Cursor cursor;
@@ -132,7 +132,7 @@ public class PetProvider extends ContentProvider {
         // No need to check breed, any value is valid (including null).
 
         // Get writable database.
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Insert the new pet with the given values.
         long id = database.insert(PetEntry.TABLE_NAME, null, values);
@@ -195,7 +195,7 @@ public class PetProvider extends ContentProvider {
         if (values.containsKey(PetEntry.COLUMN_PET_WEIGHT)) {
             Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
             // Check that the weight is >= 0.
-            if (weight != null && weight > 0) {
+            if (weight != null && weight < 0) {
                 throw new IllegalArgumentException("Pet requires valid weight");
             }
         }
@@ -208,7 +208,7 @@ public class PetProvider extends ContentProvider {
         }
 
         // Otherwise, get writable database to update the data.
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Perform the update on the database and get the number of rows affected.
         int rowsUpdated = database.update(PetEntry.TABLE_NAME, values,
@@ -230,7 +230,7 @@ public class PetProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Get writable database.
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Track the number of rows deleted.
         int rowsDeleted;
