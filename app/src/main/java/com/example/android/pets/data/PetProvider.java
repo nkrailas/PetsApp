@@ -10,12 +10,12 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-/**
- * {@link ContentProvider} for Pets app.
- */
+
+// Content Provider for Pets app.
+
 public class PetProvider extends ContentProvider {
 
-    // Tag for the log messages
+    // Tag for the log messages.
     public static final String LOG_TAG = PetProvider.class.getSimpleName();
 
     // URI matcher code for the content URI for the pets table.

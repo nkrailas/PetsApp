@@ -52,7 +52,7 @@ public class CatalogActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_catalog);
 
         // Setup FAB to open EditorActivity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +62,7 @@ public class CatalogActivity extends AppCompatActivity implements
         });
 
         // Find the ListView which will be populated with the pet data.
-        ListView petListView = (ListView) findViewById(R.id.list);
+        ListView petListView = findViewById(R.id.list);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
