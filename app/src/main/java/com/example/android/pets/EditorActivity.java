@@ -373,6 +373,7 @@ public class EditorActivity extends AppCompatActivity implements
             switch (gender) {
                 case PetEntry.GENDER_MALE:
                     mGenderSpinner.setSelection(1);
+                    break;
                 case PetEntry.GENDER_FEMALE:
                     mGenderSpinner.setSelection(2);
                     break;

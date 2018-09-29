@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.example.android.pets.data.PetContract;
+import com.example.android.pets.data.PetContract.PetEntry;
 
 // PetCursorAdapter is an adapter for a list or grid view that uses a Cursor of pet data as its
 // data source. This adapter knows how to create list items for each row of pet data in the Cursor.
@@ -55,8 +55,8 @@ public class PetCursorAdapter extends CursorAdapter {
         TextView summaryTextView = view.findViewById(R.id.summary);
 
         // Find the columns of pet attributes that we're interested in.
-        int nameColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
-        int breedColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED);
+        int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME);
+        int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
 
         // Read the pet attributes from the Cursor for the current pet.
         String petName = cursor.getString(nameColumnIndex);

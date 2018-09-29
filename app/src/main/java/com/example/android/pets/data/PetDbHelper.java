@@ -27,7 +27,8 @@ public class PetDbHelper extends SQLiteOpenHelper {
      */
 
     public PetDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME,
+                null, DATABASE_VERSION);
     }
 
     // The is called when the database is created for the first time.
