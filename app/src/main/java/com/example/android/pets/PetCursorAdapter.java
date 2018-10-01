@@ -1,5 +1,6 @@
 package com.example.android.pets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ public class PetCursorAdapter extends CursorAdapter {
      * @param context The app context.
      * @param cursor  The cursor from which to get data. The cursor has moved to the correct row.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // Find individuals views that we want to modify in the list item layout.
